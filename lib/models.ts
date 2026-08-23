@@ -17,10 +17,10 @@ export type LlamaModel = {
  */
 export const MODELS: LlamaModel[] = [
   {
-    id: 'llama-3.3-70b-versatile',
-    groqModelId: 'llama-3.3-70b-versatile',
-    gatewayModelId: 'meta/llama-3.3-70b',
-    label: 'Llama 3.3 70B',
+    id: 'gpt-oss-120b',
+    groqModelId: 'openai/gpt-oss-120b',
+    gatewayModelId: 'openai/gpt-oss-120b',
+    label: 'GPT OSS 120B',
     description: 'Equilibrio entre calidad y velocidad',
     contextLabel: '128K',
   },

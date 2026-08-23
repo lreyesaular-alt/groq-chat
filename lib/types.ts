@@ -8,8 +8,12 @@ export type ResponseStats = {
   completionTokens: number
   /** Total de tokens de la respuesta. */
   totalTokens: number
-  /** Modelo que generó la respuesta. */
+  /** Modelo que generó la respuesta (id interno de la app). */
   model: string
+  /** Id exacto enviado al proveedor (p. ej. `llama-3.3-70b-versatile`). */
+  providerModelId?: string
+  /** Proveedor efectivo: Groq directo o AI Gateway. */
+  provider?: 'groq' | 'gateway'
   /** Tiempo de respuesta en milisegundos. */
   responseTimeMs: number
   /** Tokens de salida por segundo. */

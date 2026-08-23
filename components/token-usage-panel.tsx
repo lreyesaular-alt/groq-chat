@@ -156,6 +156,19 @@ export function TokenUsagePanel({
               unit="tok/s"
             />
             <Metric label="Modelo" value={getModelLabel(stats.model)} />
+            <div className="flex flex-col gap-1 px-4 py-3">
+              <span className="label-mono text-muted-foreground">
+                Proveedor
+              </span>
+              <span className="font-mono text-sm text-foreground">
+                {stats.provider === 'groq' ? 'Groq API' : 'Vercel AI Gateway'}
+              </span>
+              {stats.providerModelId ? (
+                <span className="font-mono text-[0.6875rem] break-all text-muted-foreground">
+                  {stats.providerModelId}
+                </span>
+              ) : null}
+            </div>
           </>
         ) : (
           <p className="px-4 py-6 text-sm leading-relaxed text-muted-foreground">

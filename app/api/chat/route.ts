@@ -1,5 +1,9 @@
 import { generateText } from 'ai'
 
+import {
+  MissingProviderCredentialsError,
+  resolveModel,
+} from '@/lib/ai-provider.server'
 import { DEFAULT_MODEL_ID, isValidModelId } from '@/lib/models'
 import type { ChatRequestBody, ChatResponseBody } from '@/lib/types'
 
@@ -45,12 +49,24 @@ export async function POST(request: Request) {
     )
   }
 
-  const model = isValidModelId(modelId) ? modelId : DEFAULT_MODEL_ID
+  const selectedModelId = isValidModelId(modelId) ? modelId : DEFAULT_MODEL_ID
+
+  let resolved: ReturnType<typeof resolveModel>
+  try {
+    resolved = resolveModel(selectedModelId)
+  } catch (error) {
+    if (error instanceof MissingProviderCredentialsError) {
+      // 503: el código está listo, sólo falta la variable de entorno.
+      return Response.json({ error: error.message }, { status: 503 })
+    }
+    throw error
+  }
+
   const startedAt = Date.now()
 
   try {
     const result = await generateText({
-      model,
+      model: resolved.model,
       system: SYSTEM_PROMPT,
       messages: messages.map((message) => ({
         role: message.role,
@@ -70,7 +86,9 @@ export async function POST(request: Request) {
         promptTokens,
         completionTokens,
         totalTokens,
-        model,
+        model: selectedModelId,
+        providerModelId: resolved.providerModelId,
+        provider: resolved.provider,
         responseTimeMs,
         tokensPerSecond:
           responseTimeMs > 0 ? completionTokens / (responseTimeMs / 1000) : 0,
